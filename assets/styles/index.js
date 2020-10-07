@@ -15,7 +15,7 @@ const LIKE_ACTIONS = "#B644B2";
 const DISLIKE_ACTIONS = "#363636";
 const FLASH_ACTIONS = "#5028D7";
 
-const ICON_FONT = "tinderclone";
+const ICON_FONT = "Serif";
 
 const DIMENSION_WIDTH = Dimensions.get("window").width;
 const DIMENSION_HEIGHT = Dimensions.get("window").height;
@@ -40,7 +40,7 @@ export default StyleSheet.create({
 		borderRadius: 20
 	},
 	matchesTextCardItem: {
-		fontFamily: ICON_FONT,
+		
 		color: WHITE
 	},
 	descriptionCardItem: {
@@ -102,21 +102,21 @@ export default StyleSheet.create({
 		shadowOffset: { height: 10, width: 0 }
 	},
 	star: {
-		fontFamily: ICON_FONT,
+		
 		color: STAR_ACTIONS
 	},
 	like: {
 		fontSize: 25,
-		fontFamily: ICON_FONT,
+		
 		color: LIKE_ACTIONS
 	},
 	dislike: {
 		fontSize: 25,
-		fontFamily: ICON_FONT,
+		
 		color: DISLIKE_ACTIONS
 	},
 	flash: {
-		fontFamily: ICON_FONT,
+		
 		color: FLASH_ACTIONS
 	},
 
@@ -132,7 +132,7 @@ export default StyleSheet.create({
 		shadowOffset: { height: 0, width: 0 }
 	},
 	cityText: {
-		fontFamily: ICON_FONT,
+		
 		color: DARK_GRAY,
 		fontSize: 13
 	},
@@ -149,7 +149,7 @@ export default StyleSheet.create({
 		shadowOffset: { height: 0, width: 0 }
 	},
 	filtersText: {
-		fontFamily: ICON_FONT,
+		
 		color: DARK_GRAY,
 		fontSize: 13
 	},
@@ -200,7 +200,7 @@ export default StyleSheet.create({
 		alignSelf: "center"
 	},
 	matchesTextProfileItem: {
-		fontFamily: ICON_FONT,
+		
 		color: WHITE
 	},
 	name: {
@@ -222,7 +222,7 @@ export default StyleSheet.create({
 		alignItems: "center"
 	},
 	iconProfile: {
-		fontFamily: ICON_FONT,
+		
 		fontSize: 12,
 		color: DARK_GRAY,
 		paddingHorizontal: 10
@@ -248,7 +248,7 @@ export default StyleSheet.create({
 	},
 	title: { paddingBottom: 10, fontSize: 22, color: DARK_GRAY },
 	icon: {
-		fontFamily: ICON_FONT,
+		
 		fontSize: 20,
 		color: DARK_GRAY,
 		paddingRight: 10
@@ -278,7 +278,7 @@ export default StyleSheet.create({
 		height: 450
 	},
 	topIconLeft: {
-		fontFamily: ICON_FONT,
+		
 		fontSize: 20,
 		color: WHITE,
 		paddingLeft: 20,
@@ -286,7 +286,7 @@ export default StyleSheet.create({
 		transform: [{ rotate: "90deg" }]
 	},
 	topIconRight: {
-		fontFamily: ICON_FONT,
+		
 		fontSize: 20,
 		color: WHITE,
 		paddingRight: 20
@@ -296,9 +296,9 @@ export default StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center"
 	},
-	iconButton: { fontFamily: ICON_FONT, fontSize: 20, color: WHITE },
+	iconButton: {  fontSize: 20, color: WHITE },
 	textButton: {
-		fontFamily: ICON_FONT,
+		
 		fontSize: 15,
 		color: WHITE,
 		paddingLeft: 5
@@ -335,7 +335,7 @@ export default StyleSheet.create({
 		textTransform: "uppercase"
 	},
 	iconMenu: {
-		fontFamily: ICON_FONT,
+		
 		height: 20,
 		paddingBottom: 7
 	}
