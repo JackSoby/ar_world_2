@@ -7,6 +7,7 @@ import MatchesScreen from "./containers/Matches";
 import MessagesScreen from "./containers/Messages";
 import ProfileScreen from "./containers/Profile";
 import Icon from "./components/Icon";
+import { ARKit } from "react-native-arkit";
 
 const App = createBottomTabNavigator(
 	{
