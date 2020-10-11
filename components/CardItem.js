@@ -35,6 +35,8 @@ const CardItem = ({
     }
   ];
 
+  console.log("this is a test")
+
   return (
     <View style={styles.containerCardItem}>
       {/* IMAGE */}
