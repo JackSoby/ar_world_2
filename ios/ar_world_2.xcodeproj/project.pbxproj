@@ -23,8 +23,6 @@
 		732309003374AC2F8FA91CF8 /* libPods-ar_world_2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5057D9AC2BEAB4F54FEBAFF /* libPods-ar_world_2.a */; };
 		7F251A52928942C7BB589DAD /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 524A7583BAF44781BAB33B10 /* AntDesign.ttf */; };
 		8500456F6B0141EC89F870D1 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C80CD4912B34A82B641EE3A /* FontAwesome5_Solid.ttf */; };
-		87A3922F252EA629002E1603 /* PocketSVG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8747B0492526C019004D3B4B /* PocketSVG.framework */; };
-		87A39230252EA629002E1603 /* PocketSVG.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8747B0492526C019004D3B4B /* PocketSVG.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		87A39233252EA695002E1603 /* libRCTARKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87A39232252EA695002E1603 /* libRCTARKit.a */; };
 		8E2EDFB80E5040629A19C361 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D5C4C4FEA864A4C87EB7599 /* Zocial.ttf */; };
 		9A873A663B5A4C80B862F818 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A30A4666E5254468AB897BC9 /* MaterialCommunityIcons.ttf */; };
@@ -51,20 +49,6 @@
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "ar_world_2-tvOS";
 		};
-		8747B0482526C019004D3B4B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8747B0432526C019004D3B4B /* PocketSVG.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C79800BB1A21CB5300380860;
-			remoteInfo = "PocketSVG (iOS)";
-		};
-		8747B04A2526C019004D3B4B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8747B0432526C019004D3B4B /* PocketSVG.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C79800F51A21CDFD00380860;
-			remoteInfo = "PocketSVG (Mac)";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -74,7 +58,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				87A39230252EA629002E1603 /* PocketSVG.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,7 +88,6 @@
 		6C80CD4912B34A82B641EE3A /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		75671A0683614A79AD85D9E9 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ar_world_2/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8747B0432526C019004D3B4B /* PocketSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PocketSVG.xcodeproj; path = "../node_modules/react-native-arkit/ios/PocketSVG/PocketSVG.xcodeproj"; sourceTree = "<group>"; };
 		87A39232252EA695002E1603 /* libRCTARKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRCTARKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A30A4666E5254468AB897BC9 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		A46546992720469DB3634777 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
@@ -134,7 +116,6 @@
 			files = (
 				87A39233252EA695002E1603 /* libRCTARKit.a in Frameworks */,
 				732309003374AC2F8FA91CF8 /* libPods-ar_world_2.a in Frameworks */,
-				87A3922F252EA629002E1603 /* PocketSVG.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +188,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				8747B0432526C019004D3B4B /* PocketSVG.xcodeproj */,
 				13B07FAE1A68108700A75B9A /* ar_world_2 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* ar_world_2Tests */,
@@ -247,15 +227,6 @@
 			children = (
 			);
 			name = "Recovered References";
-			sourceTree = "<group>";
-		};
-		8747B0442526C019004D3B4B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8747B0492526C019004D3B4B /* PocketSVG.framework */,
-				8747B04B2526C019004D3B4B /* PocketSVG.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		DE3EFBB4011E4A649D2FA02F /* Resources */ = {
@@ -398,12 +369,6 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 8747B0442526C019004D3B4B /* Products */;
-					ProjectRef = 8747B0432526C019004D3B4B /* PocketSVG.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* ar_world_2 */,
@@ -413,23 +378,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		8747B0492526C019004D3B4B /* PocketSVG.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = PocketSVG.framework;
-			remoteRef = 8747B0482526C019004D3B4B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8747B04B2526C019004D3B4B /* PocketSVG.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = PocketSVG.framework;
-			remoteRef = 8747B04A2526C019004D3B4B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
@@ -530,6 +478,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ar_world_2/Pods-ar_world_2-resources.sh",
+				"${PODS_ROOT}/PocketSVG/Sources/Resources/SVGColors.plist",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -549,6 +498,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SVGColors.plist",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",

@@ -3,13 +3,10 @@ import React from 'react';
 
 export default function DetectedImage ({ position, realityMarkers, eulerAngles }) {
     var children = realityMarkers.map(marker => {
-        return <ARKit.Text
-          position={marker.position}
-          font={{ size: 0.15, depth: 0.0 }}
-          text={marker.content}
-
-      >
-      </ARKit.Text>
+      <ARKit.Image
+        position={marker.position}
+        imageUrl={marker.content_url}
+      />
     })
     
    return  <ARKit.Group 

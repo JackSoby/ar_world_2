@@ -1,12 +1,18 @@
 export const getImages = async () => {
+  console.log("tryng this")
     try {
+      console.log("tryng this")
+
       const response = await fetch('http://10.0.0.162:4000/api/v1/get-detection-images', {
         method: "GET", headers: { 'Content-Type': 'application/json' },
       })
 
+
       const json = await response.json();
       return json;
     } catch (error) {
+      console.log("REPONSE", error)
+
       throw new Error(error);
 
     }

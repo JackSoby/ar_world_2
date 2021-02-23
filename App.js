@@ -21,12 +21,8 @@ import {
   faMinus,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
-import RNLocation from "react-native-location";
 import styles from "./styles/styles";
-// import getImages from "./utils/requests";
-import * as Progress from 'react-native-progress';
-import {Surface, Shape} from '@react-native-community/art';
-import CameraRoll from "@react-native-community/cameraroll";
+import getImages from "./utils/requests";
 import ImagePicker from 'react-native-image-picker';
 
 var uuid = require("react-native-uuid");
@@ -34,14 +30,7 @@ var uuid = require("react-native-uuid");
 export default function App({}) {
   const [text, setText] = useState("");
   const [currentTrackedId, setCurrentTrackedId] = useState(null);
-  const [realityMarkers, setRealityMarkers] = useState({0: {
-    text: "",
-    position: { x: 0, y: 0, z: 0 },
-    scale: 1,
-    eulerAngles: { x: 0, y: 0, z: 0 },
-    imageUrl: "https://arworldposts.s3.us-east-2.amazonaws.com/%2F7a420d50-7263-11eb-85b1-cb322733e090.png",
-    zRotation: 0,
-  }})
+  const [realityMarkers, setRealityMarkers] = useState({})
   const [currentImageUrl, setCurrentImageUrl] = useState("");
   const [detectedImages, setDetectedImages] = useState({});
   const [currentImages, setCurrentImages] = useState([]);
@@ -51,53 +40,32 @@ export default function App({}) {
   const [tapped, setTapped] = useState(false);
   const [gravity, setGravity] = useState(false);
   const [mappedMarkers, setMappedMarkers] = useState(false);
-  const [lat, setLat] = useState(0);
-  const [long, setLong] = useState(0);
   const [locationMarkers, setLocationMarkers] = useState({});
-  const [spinner, setSpinner] = useState(true);
-  const [photo, setPhoto] = useState("");
 
-
-  https://arworldposts.s3.us-east-2.amazonaws.com/%2F7a420d50-7263-11eb-85b1-cb322733e090.png
-  useEffect(() => {
-    init();
-  }, []);
-
-
-  useEffect(() => {
-    var nextMappedMarkers = currentImages.reduce((acc, image) => {
-      var obs = image.reality_markers.reduce((acc1, marker) => {
-        return { ...acc1, [marker.id]: marker };
-      }, {});
-
-      return { ...acc, [image.image_url]: obs };
-    }, {});
-
-    setMappedMarkers(nextMappedMarkers);
-  }, [currentImages]);
-
-  useEffect(() => {
-    // getDetectionImages()  
-  }, [long]);
-
-
-
-  function init() {
-  }
-
+  // https://arposts.s3.amazonaws.com/%2F7a420d50-7263-11eb-85b1-cb322733e090.png
 
 
 
   const getDetectionImages = async () => {
     try {
-      // const json = await getImages();
-      let json
-      console.log("JSON", json.data)
+      console.log("tryng this")
+
+      const response = await fetch('http://10.0.0.162:4000/api/v1/get-detection-images', {
+        method: "GET", headers: { 'Content-Type': 'application/json' },
+      })
+      const json = await response.json();
       setCurrentImages(json.data);
     } catch (error) {
+      console.log("made it here here", error)
+
       throw new Error(error);
     }
   };
+
+  useEffect(() => {
+    console.log("going here")
+    getDetectionImages();
+  }, []);
 
 
   var takeSnapshot = async () => {
@@ -105,7 +73,7 @@ export default function App({}) {
     const picture = await ARKit.snapshotCamera({ target: "documents" });
     var imageName = uuid.v1() + ".png";
     setCurrentImageUrl(
-      "https://arworldposts.s3.us-east-2.amazonaws.com/%2F" + imageName
+      "https://arposts.s3.amazonaws.com/%2F" + imageName
     );
     const file = {
       uri: picture.url,
@@ -113,16 +81,16 @@ export default function App({}) {
       type: "image/png",
     };
 
-    const options = {
+    const imageOptions = {
       keyPrefix: "/",
-      bucket: "arworldposts",
-      region: "us-east-2",
+      bucket: "arposts",
+      region: "us-east-1",
       accessKey: AMAZON_KEY,
-      secretKey: AMAZON_SECRET,
-      successActionStatus: 201,
+      secretKey: AMAZON_SECRET
     };
 
-    RNS3.put(file, options).then((response) => {
+
+    RNS3.put(file, imageOptions).then((response) => {
       if (response.status !== 201)
         throw new Error("Failed to upload image to S3");
     });
@@ -247,7 +215,6 @@ export default function App({}) {
       longitude: long,
       vertical_accuracy: 0,
       horizontal_accuracy: 0,
-      content_url: photo,
       altitude: 0,
       euler_angles: { x: 0, y: 0, z: 0 },
     }
@@ -259,7 +226,7 @@ export default function App({}) {
 
     try {
       const response = fetch(
-        "http://10.0.0.162:4000/api/create-detection-image",
+        "http://10.0.0.162:4000/api/v1/create-detection-image",
         {
           method: "POST",
           body: JSON.stringify(body),
@@ -286,41 +253,27 @@ export default function App({}) {
   }
   
   const createRealityMarker = async () => {
-    let arItems = await Object.values(realityMarkers).reduce(
-      async (acc, marker) => {
-        var accumulator = await acc;
-        // var markerCords = await ARKit.getNewCoords(lat, long, (Math.abs(marker.position.z) / 1000), compassHeading)
-        var finalLat = newLat(marker.position.x)
-        var finalLong = newLong(marker.position.z)
-
-        console.log("finalLat", finalLat)
-        console.log("finalLong", finalLong)
-
-        return Promise.resolve([
-          ...accumulator,
+    let arItems =  Object.values(realityMarkers).reduce((acc, marker) => {
+        return [
+          ...acc,
           {
-            content: marker.text,
+            content: marker.contentUrl,
             type: "text",
             position: marker.position,
             scale: marker.scale,
-            latitude: finalLat,
-            longitude: finalLong,
-            vertical_accuracy: 0,
-            horizontal_accuracy: 0,
-            altitude: 0,
             euler_angles: { x: 0, y: 0, z: marker.zRotation },
           },
-        ]);
-      },
-      Promise.resolve([])
+        ]
+      }
     );
 
     var body = {
-      detection_image: { image_url: currentImageUrl, reality_markers: arItems },
+      detection_image: { image_url: currentImageUrl, reality_markers: realityMarkers },
     };
+
     try {
       const response = fetch(
-        "http://10.0.0.162:4000/api/create-detection-image",
+        "http://10.0.0.162:4000/api/v1/create-detection-image",
         {
           method: "POST",
           body: JSON.stringify(body),
@@ -328,7 +281,6 @@ export default function App({}) {
         }
       );
       console.log("made the request:", response);
-      init();
     } catch (error) {
       throw new Error(repsonse);
     }
@@ -336,101 +288,17 @@ export default function App({}) {
 
 
   var realityObjects = Object.values(realityMarkers).map((obj, index) => {
-    // let isTapTracking = currentTrackedId == index && tapped == true;
-
-    // return (
-    //   <ARKit.Text
-    //   id={`${index}`}
-    //   key={index}
-    //   text="ARKit is Cool!"
-    //   position={obj["position"]}
-    //   eulerAngles={obj["eulerAngles"]}
-    //   scale={obj["scale"]}
-    //   font={{ size: 0.15, depth: 0.05 }}
-    // />
-    // );
     return (
         <ARKit.Image
           id={`${index}`}
           key={`${index}`}
           position={obj["position"]}
-          eulerAngles={obj["eulerAngles"]}
+          eulerAngles={obj["euler_angles"]}
           scale={obj["scale"]}
-          imageUrl={obj["imageUrl"]}
+          imageUrl={obj["content_url"]}
         />
     )
   });
-
-
-
-  function resetLocation() {
-    RNLocation.configure({
-      distanceFilter: 5.0,
-      desiredAccuracy: {
-        ios: "nearestTenMeters",
-      },
-    });
-
-    RNLocation.requestPermission({
-      ios: "whenInUse",
-    }).then((granted) => {
-      if (granted) {
-        RNLocation.getLatestLocation().then((location) => {
-          console.log("location", location);
-          Object.keys(mappedMarkers).map((key) => {
-            var image = mappedMarkers[key];
-            Object.values(image).map((marker) => {
-              var name = key + "|" + marker.id;
-              ARKit.addAnchorByLocation(
-                name,
-                location.latitude,
-                location.longitude,
-                marker.latitude,
-                marker.longitude,
-                5,
-                5,
-                6,
-                6,
-                10.70901107788086,
-                10.70901107788086
-              );
-            });
-          });
-          closeGate();
-        });
-      }
-    });
-  }
-
-  function drag() {
-    setTapped(false);
-    setCurrentTrackedId(null);
-  }
-
-
-
-
-  function newLat(your_meters){
-    var earth = 6378.137,  //radius of the earth in kilometer
-    pi = Math.PI,
-    m = (1 / ((2 * pi / 360) * earth)) / 1000;  //1 meter in degree
-
-    var new_latitude = lat + (your_meters * m);
-
-    return new_latitude;
-  }
-
-
-  function newLong(your_meters){
-    var earth = 6378.137,  //radius of the earth in kilometer
-    pi = Math.PI,
-    cos = Math.cos,
-    m = (1 / ((2 * pi / 360) * earth)) / 1000;  //1 meter in degree
-
-    var new_longitude = long + (your_meters * m) / cos(lat * (pi / 180));
-
-    return new_longitude
-  }
 
   function minus() {
     var currentMarkerPosition = realityMarkers[currentTrackedId].position;
@@ -478,17 +346,8 @@ export default function App({}) {
     return image.image_url;
   });
 
-  if (photo != "") {
-    mainButton = (
-      <TouchableOpacity
-        onPress={createPost}
-        style={styles.contentButton}
-      ></TouchableOpacity>
-    );
-  }
 
   function pickImage() {
-
   
   const options = {
     title: 'Select Post',
@@ -497,9 +356,9 @@ export default function App({}) {
       path: 'images',
     },
   };
+  takeSnapshot().then(res => {
 
   ImagePicker.showImagePicker(options, (response) => {
-    console.log('Response = ', response);
   
     if (response.didCancel) {
       console.log('User cancelled image picker');
@@ -508,13 +367,8 @@ export default function App({}) {
     } else if (response.customButton) {
       console.log('User tapped custom button: ', response.customButton);
     } else {
-      takeSnapshot()
       const source = { uri: response.uri };
   
-      // You can also display the image using data:
-      // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-  
-      console.log("SOURCE:", source)
       var imageName = uuid.v1() + ".png";
 
       const file = {
@@ -523,52 +377,38 @@ export default function App({}) {
         type: "image/png",
       };
 
-      const ImageOptions = {
+      const imageOptions = {
         keyPrefix: "/",
-        bucket: "arworldposts",
-        region: "us-east-2",
+        bucket: "arposts",
+        region: "us-east-1",
         accessKey: AMAZON_KEY,
-        secretKey: AMAZON_SECRET,
-        successActionStatus: 201,
+        secretKey: AMAZON_SECRET
       };
   
 
-      RNS3.put(file, ImageOptions).then((response) => {
-        // setPhoto(
-        //   "https://arworldposts.s3.us-east-2.amazonaws.com/%2F" + imageName
-        // );
-
+      RNS3.put(file, imageOptions).then((response) => {  
         var newObject = {
           text: text,
+          type: "image",
           position: { x: 0, y: 0, z: -1 },
           scale: 1,
-          eulerAngles: { x: 0, y: 0, z: 0 },
-          imageUrl: "https://arworldposts.s3.us-east-2.amazonaws.com/%2F" + imageName,
+          euler_angles: { x: 0, y: 0, z: 0 },
+          content_url: "https://arposts.s3.amazonaws.com/%2F" + imageName,
           zRotation: 0,
         };
+
         setRealityMarkers({
           ...realityMarkers,
           [Object.keys(realityMarkers).length]: newObject,
         });
-
         if (response.status !== 201)
           throw new Error("Failed to upload image to S3");
       });
     }
   });
+})
 
 }
-
-
-  var imageNode = <View></View>
-  if(photo != ""){
-    imageNode =   <ARKit.Image
-    position={{x: 0, y: 0, z: 2}}
-    imageUrl={photo}
-    />
-  }
-
-  console.log("realityobjects", realityObjects)
 
   return (
     <View
@@ -589,7 +429,7 @@ export default function App({}) {
 
         <ARKit
         style={{ flex: 1 }}
-        // detectionImages={[{ arDetectionImages: detectionURLS}]}
+        detectionImages={[{ arDetectionImages: detectionURLS}]}
         worldAlignment={
           // gravity
               ARKit.ARWorldAlignment.Gravity
@@ -670,63 +510,7 @@ export default function App({}) {
         }}
       >  
         {realityObjects}
-
-       {/* <ARKit.Image
-          position={{x: 1, y:0, z:0.5}}
-          eulerAngles={{x: 0, y:1.5, z:0}}
-          imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-        /> 
-       <ARKit.Image
-        position={{x: -1, y:0, z:-0.5}}
-        eulerAngles={{x: 0, y:-1.5, z:0}}
-        imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-      /> 
-
-      <ARKit.Image
-        position={{x: 0, y:0, z:-1}}
-        eulerAngles={{x: 0, y:0, z:0}}
-        imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-      /> 
-      <ARKit.Image
-        position={{x: 0, y:2, z:-3}}
-        eulerAngles={{x: 0, y:0, z:0}}
-        imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-      /> 
-      <ARKit.Image
-        position={{x: 4, y:2, z:-3}}
-        eulerAngles={{x: 0, y:-1, z:0}}
-        imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-      /> 
-      <ARKit.Image
-        position={{x: 0, y:0, z:3}}
-        eulerAngles={{x: 0, y:3, z:0}} 
-        imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-      /> 
-      <ARKit.Image
-          position={{x: 1, y:0, z:1.5}}
-          eulerAngles={{x: 0, y:1.5, z:0}}
-          imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-        /> 
-        <ARKit.Image
-          position={{x: 1, y:0, z:-2.5}}
-          eulerAngles={{x: 0, y:1.5, z:0}}
-          imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-        /> 
-        <ARKit.Image
-          position={{x: 5, y:0, z:-3.5}}
-          eulerAngles={{x: 0, y:0, z:0}}
-          imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-        /> 
-        <ARKit.Image
-          position={{x: 7, y:0, z:1}}
-          eulerAngles={{x: 0, y:-1, z:0}}
-          imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-        /> 
-        <ARKit.Image
-          position={{x: 6, y:0, z:5}}
-          eulerAngles={{x: 0, y:-2, z:0}}
-          imageUrl={"https://arworldposts.s3.us-east-2.amazonaws.com/public/09958906-00A0-451F-A4B7-78966DC5AF60.png"}
-        />  */}
+        {anchors}
       </ARKit>
       <TextInput
         ref={(x) => (this.input = x)}
@@ -747,7 +531,7 @@ export default function App({}) {
       />
       <ButtonWithIcon
         condition={currentTrackedId != null && tapped}
-        onPress={drag}
+        onPress={true}
         style={{ top: 3 }}
         parentStyle={styles.dragStyle}
         buttonContent={<FontAwesomeIcon icon={faTimes} />}
