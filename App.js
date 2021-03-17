@@ -24,6 +24,8 @@ import {
 import styles from "./styles/styles";
 import getImages from "./utils/requests";
 import ImagePicker from 'react-native-image-picker';
+import postLocations from './positions';
+import { ForeignObject } from "react-native-svg";
 
 var uuid = require("react-native-uuid");
 
@@ -45,7 +47,6 @@ export default function App({}) {
   // https://arposts.s3.amazonaws.com/%2F7a420d50-7263-11eb-85b1-cb322733e090.png
 
 
-
   const getDetectionImages = async () => {
     try {
       console.log("tryng this")
@@ -53,7 +54,11 @@ export default function App({}) {
       const response = await fetch('http://10.0.0.162:4000/api/v1/get-detection-images', {
         method: "GET", headers: { 'Content-Type': 'application/json' },
       })
+      console.log("response", response)
+
       const json = await response.json();
+      console.log("josn", json)
+
       setCurrentImages(json.data);
     } catch (error) {
       console.log("made it here here", error)
@@ -75,6 +80,7 @@ export default function App({}) {
     setCurrentImageUrl(
       "https://arposts.s3.amazonaws.com/%2F" + imageName
     );
+    
     const file = {
       uri: picture.url,
       name: imageName,
@@ -320,20 +326,23 @@ export default function App({}) {
     updateRealityMarkers("position", nextPosition);
   }
 
-  var anchors = currentImages.map((object) => {
+var anchors = currentImages.map((object) => {
     if(!currentImageUrl){
       var currentDetectedImage = detectedImages[object.image_url];
-      if (currentDetectedImage) {
+      var position = currentDetectedImage ? currentDetectedImage.position : postLocations.positions[2].position
+      var eulerAngles = currentDetectedImage ? currentDetectedImage.eulerAngles : postLocations.positions[2].eulerAngles
+
         return (
           <DetectedImage
-            position={currentDetectedImage.position}
+            position={position}
             realityMarkers={object.reality_markers}
-            eulerAngles={object.eulerAngles}
+            eulerAngles={eulerAngles}
           />
         );
-      }
+    
     }
   });
+
 
   var mainButton = (
     <TouchableOpacity
@@ -429,12 +438,9 @@ export default function App({}) {
 
         <ARKit
         style={{ flex: 1 }}
+        // planeDetection={ARKit.ARPlaneDetection.Vertical}
         detectionImages={[{ arDetectionImages: detectionURLS}]}
-        worldAlignment={
-          // gravity
-              ARKit.ARWorldAlignment.Gravity
-            //  ARKit.ARWorldAlignment.GravityAndHeading
-        }
+        worldAlignment={ARKit.ARWorldAlignment.Gravity}
         onRotationGesture={(e) => {
           if (!canCall) return;
           updateRealityMarkers("zRotation", e.rotation);
@@ -444,60 +450,13 @@ export default function App({}) {
           }, 10);
         }}
         onAnchorUpdated={(anchor) => {
-          if (anchor.image) {
-            setGravity(true);
-            if (!detectedImages[anchor.image.name]) {
-              var oldMarkers = locationMarkers;
-              delete oldMarkers[anchor.image.name];
-              setLocationMarkers(oldMarkers);
-              setDetectedImages({
-                ...detectedImages,
-                [anchor.image.name]: { position: anchor.position },
-              });
-            }
-          } else {
-            var imageKey = anchor.name.split("|")[0];
-            var anchorKey = anchor.name.split("|")[1];
-
-            var image = mappedMarkers[imageKey];
-            var prevMarkers = locationMarkers[imageKey]
-            var updateAnchor = true 
-            
-
-            if(prevMarkers){
-              if(prevMarkers[anchorKey] ){
-                if( !prevMarkers[anchorKey].position.x > anchor.x || !prevMarkers[anchorKey].position.z > anchor.z){
-                  updateAnchor = false  
-              }
-            } 
+          if(!detectedImages[anchor.image.name]){
+            setDetectedImages( { ...detectedImages, [anchor.image.name]:{ position: anchor.position, eulerAngles: anchor.eulerAngles }} )
+            ARKit.getCamera().then(response => {
+              setDetectedImages( { ...detectedImages, [anchor.image.name]:{ position: anchor.position, eulerAngles: {y: response.eulerAngles.y} }} )
+            });
           }
-          // remove anchors when making new post
-          // get function to place content on new post creation
-          
-            if (image && !detectedImages[imageKey] && updateAnchor) {
-              var currentAnchor = image[anchorKey];
-              var prevMarkers = locationMarkers[imageKey]
-                ? locationMarkers[imageKey]
-                : {};
 
-              var nextLocationMarkers = {
-                ...locationMarkers,
-                [imageKey]: {
-                  ...prevMarkers,
-                  [anchorKey]: {
-                    position: anchor.position,
-                    text: currentAnchor.content,
-                    eulerAngles: anchor.eulerAngles,
-                  },
-                },
-              };
-
-              setLocationMarkers(nextLocationMarkers);
-              // setRealityMarkers({ ...realityMarkers, [anchor.name.split("|")[1]]: {position: anchor.position,
-              //   text: currentAnchor.content, eulerAngles: anchor.eulerAngles
-              // }})
-            }
-          }
         }}
         onTapOnPlaneNoExtent={(e) => setTapped(true)}
         onPinchGesture={(e) => {
@@ -508,9 +467,10 @@ export default function App({}) {
             setCanCall(true);
           }, 25);
         }}
-      >  
+      >
         {realityObjects}
         {anchors}
+
       </ARKit>
       <TextInput
         ref={(x) => (this.input = x)}
