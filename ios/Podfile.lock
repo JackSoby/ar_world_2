@@ -67,6 +67,10 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - lottie-ios (2.5.3)
+  - lottie-react-native (2.6.1):
+    - lottie-ios (~> 2.5.0)
+    - React
   - OpenSSL-Universal (1.0.2.19):
     - OpenSSL-Universal/Static (= 1.0.2.19)
   - OpenSSL-Universal/Static (1.0.2.19)
@@ -237,7 +241,7 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
   - React-jsinspector (0.62.2)
-  - react-native-cameraroll (4.0.2):
+  - react-native-cameraroll (4.0.4):
     - React-Core
   - react-native-compass-heading (1.0.2):
     - React
@@ -247,7 +251,7 @@ PODS:
     - React-Core
   - react-native-location (2.5.0):
     - React
-  - react-native-safe-area-context (3.1.9):
+  - react-native-safe-area-context (3.2.0):
     - React-Core
   - React-RCTActionSheet (0.62.2):
     - React-Core/RCTActionSheetHeaders (= 0.62.2)
@@ -312,15 +316,15 @@ PODS:
     - React
   - ReactNativeGetLocation (1.4.3):
     - React
-  - RNCMaskedView (0.1.10):
+  - RNCMaskedView (0.1.11):
     - React
-  - RNGestureHandler (1.10.1):
+  - RNGestureHandler (1.10.3):
     - React-Core
-  - RNReanimated (1.13.2):
+  - RNReanimated (1.13.3):
     - React-Core
-  - RNScreens (2.17.1):
+  - RNScreens (2.18.1):
     - React-Core
-  - RNSVG (12.1.0):
+  - RNSVG (12.1.1):
     - React
   - RNVectorIcons (7.1.0):
     - React
@@ -353,6 +357,8 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.33.1)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - lottie-ios (from `../node_modules/lottie-ios`)
+  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - RCTARKit (from `../../react-native-arkit/ios`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -419,6 +425,10 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  lottie-ios:
+    :path: "../node_modules/lottie-ios"
+  lottie-react-native:
+    :path: "../node_modules/lottie-react-native"
   RCTARKit:
     :path: "../../react-native-arkit/ios"
   RCTRequired:
@@ -506,6 +516,8 @@ SPEC CHECKSUMS:
   FlipperKit: 6dc9b8f4ef60d9e5ded7f0264db299c91f18832e
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  lottie-ios: a50d5c0160425cd4b01b852bb9578963e6d92d31
+  lottie-react-native: 3d8181d43619b1fe804c828bd5a09d20fe8bdea7
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   PocketSVG: 5e0ff20c8a661586b2f2c295cd18b3e8f06de552
   RCTARKit: 294e0512cee6185119b572689879f8cc05c821e5
@@ -518,12 +530,12 @@ SPEC CHECKSUMS:
   React-jsi: b6dc94a6a12ff98e8877287a0b7620d365201161
   React-jsiexecutor: 1540d1c01bb493ae3124ed83351b1b6a155db7da
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
-  react-native-cameraroll: 717193a0427fd0db78d3f10385a008fcc102213c
+  react-native-cameraroll: 7c6c7ca84844f93b3dac9a87670bbad6541684ec
   react-native-compass-heading: 18742617bdb9e06ce104bd3b90f0dc700b791fd1
   react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
   react-native-image-picker: 32d1ad2c0024ca36161ae0d5c2117e2d6c441f11
   react-native-location: 9c53c0957756f7d70e8fdc76b1c7ed85867c8d0b
-  react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
+  react-native-safe-area-context: e471852c5ed67eea4b10c5d9d43c1cebae3b231d
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
   React-RCTAnimation: 49ab98b1c1ff4445148b72a3d61554138565bad0
   React-RCTBlob: a332773f0ebc413a0ce85942a55b064471587a71
@@ -536,15 +548,15 @@ SPEC CHECKSUMS:
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
   ReactNativeART: f003b07dfa7098aa419ed95b69560923440b1eee
   ReactNativeGetLocation: 89122289934b38e1a2ded7d921f5d16a16328aa0
-  RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
-  RNGestureHandler: 5e58135436aacc1c5d29b75547d3d2b9430d052c
-  RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
-  RNScreens: b6c9607e6fe47c1b6e2f1910d2acd46dd7ecea3a
-  RNSVG: ce9d996113475209013317e48b05c21ee988d42e
+  RNCMaskedView: f127cd9652acfa31b91dcff613e07ba18b774db6
+  RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
+  RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
+  RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
+  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: be1aaa701b79a15ddc0f4783f5eb5e672895ca3a
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

@@ -6,6 +6,10 @@ var styles = StyleSheet.create({
       fontSize: 16,
       color: "#69BBD3"
     },
+    lottie: {
+      width: 300,
+      height: 300
+    },
     cameraButton: {
       paddingTop: 15,
       display: "flex",

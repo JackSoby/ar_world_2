@@ -1,23 +1,25 @@
 import { ARKit } from 'react-native-arkit';
 import React from 'react';
+import { View } from "react-native";
 
 export default function DetectedImage ({ position, realityMarkers, eulerAngles}) {
     var children = realityMarkers.map(marker => {
-      console.log("imageurl", marker)
-        return<ARKit.Image
-
+      console.log("imageurl", marker.contentUrl)
+        return <ARKit.Image
           position={marker.position}
-          font={{ size: 0.15, depth: 0.0 }}
-          text={"arkit is sooo"}
           imageUrl={marker["contentUrl"]}
       >
       </ARKit.Image>
     })
 
-  return  <ARKit.Group 
-  position={position} 
-  eulerAngles={eulerAngles}
- >
-    {children}
-  </ARKit.Group>
+  return  <View>
+    {/* {children} */}
+  </View>
   }
+
+
+      // {/* <ARKit.Text
+      //       text={likes}
+      //       position={{ x: y, y: x, z: realityMarkers.z }}
+      //       font={{ size: 0.15, depth: 0.05 }}
+      //     /> */}

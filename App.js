@@ -26,6 +26,8 @@ import getImages from "./utils/requests";
 import ImagePicker from 'react-native-image-picker';
 import postLocations from './positions';
 import { ForeignObject } from "react-native-svg";
+import { detectionImages } from "react-native-arkit/components/lib/propTypes";
+// import AnimatedLoader from "react-native-animated-loader";
 
 var uuid = require("react-native-uuid");
 
@@ -40,24 +42,17 @@ export default function App({}) {
   const [pinching, setPinching] = useState(false);
   const [canCall, setCanCall] = useState(true);
   const [tapped, setTapped] = useState(false);
-  const [gravity, setGravity] = useState(false);
-  const [mappedMarkers, setMappedMarkers] = useState(false);
-  const [locationMarkers, setLocationMarkers] = useState({});
 
-  // https://arposts.s3.amazonaws.com/%2F7a420d50-7263-11eb-85b1-cb322733e090.png
 
 
   const getDetectionImages = async () => {
+    console.log("helllooooo")
     try {
-      console.log("tryng this")
-
-      const response = await fetch('http://10.0.0.162:4000/api/v1/get-detection-images', {
+      const response = await fetch('http://10.0.0.35:4000/api/v1/get-detection-images', {
         method: "GET", headers: { 'Content-Type': 'application/json' },
       })
-      console.log("response", response)
 
       const json = await response.json();
-      console.log("josn", json)
 
       setCurrentImages(json.data);
     } catch (error) {
@@ -103,10 +98,31 @@ export default function App({}) {
   };
 
   function handleResponderMove(e) {
-    hitTestPlanes(
-      { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY },
-      e.touchHistory.numberActiveTouches
-    );
+    if (Object.keys(realityMarkers).length  == 0 ){
+      likeOrComment(
+        { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY },
+        e.touchHistory.numberActiveTouches
+      );
+    } else {
+      hitTestPlanes(
+        { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY },
+        e.touchHistory.numberActiveTouches
+      );
+    }
+  }
+
+  var likeOrComment = async (location, numberActiveTouches) => { 
+
+    const objects = await ARKit.hitTestSceneObjects(location);
+    if (objects.results[0]) {
+      var id = objects.results[0].id
+     var likedImage = currentImages.map(image => {
+      var result = image.reality_markers.filter(marker => marker.contentUrl == id);
+      console.log("RESULT", result)
+      return result
+     }).flat()
+     console.log("likedImage", likedImage[0])
+    }
   }
 
   var hitTestPlanes = async (location, numberActiveTouches) => {
@@ -232,7 +248,7 @@ export default function App({}) {
 
     try {
       const response = fetch(
-        "http://10.0.0.162:4000/api/v1/create-detection-image",
+        "http://10.0.0.39:4000/api/v1/create-detection-image",
         {
           method: "POST",
           body: JSON.stringify(body),
@@ -279,7 +295,7 @@ export default function App({}) {
 
     try {
       const response = fetch(
-        "http://10.0.0.162:4000/api/v1/create-detection-image",
+        "http://10.0.0.39:4000/api/v1/create-detection-image",
         {
           method: "POST",
           body: JSON.stringify(body),
@@ -326,22 +342,23 @@ export default function App({}) {
     updateRealityMarkers("position", nextPosition);
   }
 
-var anchors = currentImages.map((object) => {
-    if(!currentImageUrl){
-      var currentDetectedImage = detectedImages[object.image_url];
-      var position = currentDetectedImage ? currentDetectedImage.position : postLocations.positions[2].position
-      var eulerAngles = currentDetectedImage ? currentDetectedImage.eulerAngles : postLocations.positions[2].eulerAngles
 
-        return (
-          <DetectedImage
-            position={position}
-            realityMarkers={object.reality_markers}
-            eulerAngles={eulerAngles}
-          />
-        );
+
+var anchors = currentImages.map((object, i) => {
+  var currentDetectedImage = detectedImages[object.image_url];
+
+  var position = currentDetectedImage ? currentDetectedImage.position : postLocations.positions[i+3].position
+  var eulerAngles = currentDetectedImage ? currentDetectedImage.eulerAngles : postLocations.positions[i+3].eulerAngles
+    return (
+      <DetectedImage
+        position={position}
+        realityMarkers={object.reality_markers}
+        eulerAngles={eulerAngles}
+        likes={object.likes}
+      />
+    );
     
-    }
-  });
+});
 
 
   var mainButton = (
@@ -421,7 +438,7 @@ var anchors = currentImages.map((object) => {
 
   return (
     <View
-      style={{ flex: 1 }}
+      style={{ flex: 1}}
       onResponderMove={handleResponderMove}
       onStartShouldSetResponder={() => {
         return true;
@@ -451,9 +468,8 @@ var anchors = currentImages.map((object) => {
         }}
         onAnchorUpdated={(anchor) => {
           if(!detectedImages[anchor.image.name]){
-            setDetectedImages( { ...detectedImages, [anchor.image.name]:{ position: anchor.position, eulerAngles: anchor.eulerAngles }} )
             ARKit.getCamera().then(response => {
-              setDetectedImages( { ...detectedImages, [anchor.image.name]:{ position: anchor.position, eulerAngles: {y: response.eulerAngles.y} }} )
+              setDetectedImages( { ...detectedImages, [anchor.image.name]: { position: anchor.position, eulerAngles: {y: response.eulerAngles.y} }} )
             });
           }
 
@@ -471,6 +487,17 @@ var anchors = currentImages.map((object) => {
         {realityObjects}
         {anchors}
 
+        <ARKit.Group opacity={0.5}   eulerAngles={{ x: 0.2 }}
+  position={{ x: 0.2, y: 0.3, z: -0.2 }}>
+    <ARKit.Sphere
+      position={{ x: 0, y: 0, z: 0 }}
+      shape={{ radius: 0.06 }}
+    />
+    <ARKit.Cone
+      position={{ x: 0, y: 0.4, z: 0 }}
+      shape={{ topR: 0.1, bottomR: 0.05, height: 0.5 }}
+    />
+  </ARKit.Group>
       </ARKit>
       <TextInput
         ref={(x) => (this.input = x)}
@@ -480,6 +507,14 @@ var anchors = currentImages.map((object) => {
         onSubmitEditing={submitTextObject}
       ></TextInput>
       {mainButton}
+  
+      {/* <AnimatedLoader
+        visible={true}
+        source={require("./loader.json")}
+        animationStyle={styles.lottie}
+        overlayColor={'rgba(255,255,255,0.75)'}
+        speed={3}
+        /> */}
       <ButtonWithIcon
         condition={
           currentImageUrl != "" && Object.values(realityMarkers).length > 0
@@ -489,7 +524,7 @@ var anchors = currentImages.map((object) => {
         parentStyle={styles.saveButton}
         buttonContent={"Save"}
       />
-      <ButtonWithIcon
+      {/* <ButtonWithIcon
         condition={currentTrackedId != null && tapped}
         onPress={true}
         style={{ top: 3 }}
@@ -509,12 +544,14 @@ var anchors = currentImages.map((object) => {
         style={{ top: 3 }}
         parentStyle={styles.plusStyle}
         buttonContent={<FontAwesomeIcon icon={faPlus} />}
-      />
+      /> */}
       {/* <FontAwesomeIcon icon={faSpinner} />
       <Progress.Circle size={30} indeterminate={true} /> */}
 
       {/* <ButtonWithIcon condition={true} onPress={resetLocation} style={{top:3}} parentStyle={styles.plusStyle} buttonContent={<FontAwesomeIcon icon={faRedo}/> } /> */}
     </View>
   );
+
 }
+
 
